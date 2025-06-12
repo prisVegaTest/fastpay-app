@@ -1,0 +1,29 @@
+name: Despliegue remoto fastpay-app
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v3
+
+      - name: Despliegue remoto al servidor
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            echo "Conectado exitosamente al servidor"
+            cd ~/fastpay-deploy
+            echo "Actualizando archivos del repo..."
+            rm -rf *
+            mkdir -p fastpay-backend
+            echo "Versión $(date)" > fastpay-backend/VERSION.txt
+            echo "Despliegue finalizado"
