@@ -23,7 +23,7 @@ jobs:
 
       - name: Ejecutar pruebas y cobertura de código
         run: |
-          npx nyc --reporter=html --reporter=text npm test > test-output.log
+          npx --yes nyc --reporter=html --reporter=text npm test > test-output.log
           echo "Pruebas y coberturas finalizadas."
       
       - name: Subir logs y cobertura
