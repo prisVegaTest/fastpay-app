@@ -21,9 +21,13 @@ jobs:
       - name: Instalar dependencias
         run: npm install
 
+      - name: Dar permisos de ejecución a nyc
+        run: chmod +x ./node_modules/.bin/nyc
+      
       - name: Ejecutar pruebas y cobertura de código
         run: |
-          npx --yes nyc --reporter=html --reporter=text npm test > test-output.log
+          chmod +x ./node_modules/.bin/nyc  
+          npm run coverage > test-output.log
           echo "Pruebas y coberturas finalizadas."
       
       - name: Subir logs y cobertura
