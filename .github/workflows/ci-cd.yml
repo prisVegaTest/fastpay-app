@@ -27,7 +27,7 @@ jobs:
           echo "Pruebas y coberturas finalizadas."
       
       - name: Subir logs y cobertura
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: reportes-pruebas
           path: |
