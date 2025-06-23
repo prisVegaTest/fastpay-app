@@ -9,39 +9,47 @@ on:
 jobs:
   build-test:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Clonar repositorio
-      uses: actions/checkout@v3
+      - name: Clonar repositorio
+        uses: actions/checkout@v3
 
-    - name: Usar Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 18
+      - name: Configurar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
 
-    - name: Instalar dependencias
-      run: npm install
+      - name: Instalar dependencias
+        run: npm install
 
-    - name: Ejecutar pruebas
-      run: npm test
+      - name: Ejecutar pruebas y cobertura de código
+        run: |
+          npm run coverage > test-output.log
+          echo "Pruebas y coberturas finalizadas."
+      
+      - name: Subir logs y cobertura
+        uses: actions/upload-artifact@v3
+        with:
+          name: reportes-pruebas
+          path: |
+            test-output.log
+            coverage/
 
   docker:
     needs: build-test
     runs-on: ubuntu-latest
 
     steps:
-    - name: Clonar repositorio
-      uses: actions/checkout@v3
+      - name: Clonar repositorio
+        uses: actions/checkout@v3
 
-    - name: Login en DockerHub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Login en DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    - name: Construir imagen Docker
-      run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/fastpay-app .
+      - name: Construir imagen Docker
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/fastpay-app .
 
-    - name: Subir imagen a DockerHub
-      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/fastpay-app
-
+      - name: Subir imagen a DockerHub
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/fastpay-app
