@@ -30,6 +30,34 @@ jobs:
           npm run coverage > test-output.log
           echo "Pruebas y coberturas finalizadas."
       
+      - name: Analizar código con ESLint
+        run: npx eslint .
+
+      - name: Auditoría de seguridad (npm audit)
+        run: npm audit --audit-level=moderate
+      
+      - name: Escanear imagen con Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/fastpay-app
+      
+      - name: Deploy a Azure Web App
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'fastpay-app'
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: .
+      
+      - name: Instalar Trivy (alternativa si falla el action oficial)
+        run: |
+            sudo apt-get install wget -y
+            wget -qO- https://github.com/aquasecurity/trivy/releases/latest/download/trivy_0.49.1_Linux-64bit.tar.gz | tar zxv
+            sudo mv trivy /usr/local/bin/
+  
+      - name: Escanear proyecto con Trivy
+        run: trivy fs --exit-code 1 --severity HIGH,CRITICAL .
+
       - name: Subir logs y cobertura
         uses: actions/upload-artifact@v4
         with:
@@ -37,6 +65,11 @@ jobs:
           path: |
             test-output.log
             coverage/
+
+      #- name: Subir a Coveralls
+        #run: cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+        #env:
+          #COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}*/
 
   docker:
     needs: build-test
