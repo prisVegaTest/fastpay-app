@@ -21,8 +21,10 @@ jobs:
       - name: Instalar dependencias
         run: npm install
 
-      - name: Dar permisos de ejecución a nyc
-        run: chmod +x ./node_modules/.bin/nyc
+      - name: Dar permisos de ejecución a nyc y mocha
+        run: 
+          chmod +x ./node_modules/.bin/nyc
+          chmod +x ./node_modules/.bin/mocha
       
       - name: Ejecutar pruebas y cobertura de código
         run: |
