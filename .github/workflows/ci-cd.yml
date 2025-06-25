@@ -43,14 +43,6 @@ jobs:
         with:
           image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/fastpay-app
       
-      - name: Deploy a Azure Web App
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: 'fastpay-app'
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: .
-      
       - name: Instalar Trivy (alternativa si falla el action oficial)
         run: |
           sudo apt-get update && sudo apt-get install wget -y
@@ -69,15 +61,9 @@ jobs:
             test-output.log
             coverage/
 
-      #- name: Subir a Coveralls
-        #run: cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
-        #env:
-          #COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}*/
-
   docker:
     needs: build-test
     runs-on: ubuntu-latest
-
     steps:
       - name: Clonar repositorio
         uses: actions/checkout@v3
@@ -97,16 +83,9 @@ jobs:
   deploy:
     needs: docker
     runs-on: ubuntu-latest
-      
     steps:
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-      
       - name: Deploy Docker container to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'fastpay-app'
           images: ${{ secrets.DOCKERHUB_USERNAME }}/fastpay-app
-      
