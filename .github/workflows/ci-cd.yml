@@ -93,3 +93,20 @@ jobs:
 
       - name: Subir imagen a DockerHub
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/fastpay-app
+
+  deploy:
+    needs: docker
+    runs-on: ubuntu-latest
+      
+    steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      - name: Deploy Docker container to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'fastpay-app'
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/fastpay-app
+      
