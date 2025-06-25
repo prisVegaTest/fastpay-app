@@ -22,7 +22,7 @@ jobs:
         run: npm install
 
       - name: Dar permisos de ejecución a nyc y mocha
-        run: 
+        run: |
           chmod +x ./node_modules/.bin/nyc
           chmod +x ./node_modules/.bin/mocha
       
