@@ -26,7 +26,6 @@ jobs:
       
       - name: Ejecutar pruebas y cobertura de código
         run: |
-          chmod +x ./node_modules/.bin/nyc  
           npm run coverage > test-output.log
           echo "Pruebas y coberturas finalizadas."
       
