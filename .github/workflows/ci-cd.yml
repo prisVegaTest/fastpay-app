@@ -21,16 +21,17 @@ jobs:
       - name: Instalar dependencias
         run: npm install
 
-      - name: Dar permisos de ejecución a nyc y mocha
+      - name: Dar permisos de ejecución requeridos
         run: |
           chmod +x ./node_modules/.bin/nyc
           chmod +x ./node_modules/.bin/mocha
+          chmod +x ./node_modules/.bin/eslint
       
       - name: Ejecutar pruebas y cobertura de código
         run: |
           npm run coverage > test-output.log
           echo "Pruebas y coberturas finalizadas."
-      
+    
       - name: Analizar código con ESLint
         run: npx eslint .
 
