@@ -35,6 +35,14 @@ jobs:
       - name: Analizar código con ESLint
         run: npx eslint .
 
+      - name: Analizar código con SonarCloud
+        uses: SonarSource/sonarcloud-github-action@v2
+        with:
+          args: >
+            -Dsonar.projectKey=fastpay-app
+            -Dsonar.organization=prisvegatest
+            -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+
       - name: Auditoría de seguridad (npm audit)
         run: npm audit --audit-level=moderate || true
       
