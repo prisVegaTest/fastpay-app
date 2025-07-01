@@ -38,10 +38,11 @@ jobs:
       - name: Analizar código con SonarCloud
         uses: SonarSource/sonarcloud-github-action@v2
         with:
-          args: >
-            -Dsonar.projectKey=fastpay-app
-            -Dsonar.organization=prisvegatest
-            -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+          projectBaseDir: .
+        env:
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+            SONAR_PROJECT_KEY: fastpay-app
+            SONAR_ORGANIZATION: prisvegatest
 
       - name: Auditoría de seguridad (npm audit)
         run: npm audit --audit-level=moderate || true
