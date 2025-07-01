@@ -39,6 +39,12 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@v2
         with:
           projectBaseDir: .
+          args: >
+            -Dsonar.projectKey=prisvegatest_fastpay-app
+            -Dsonar.organization=prisvegatest
+            -Dsonar.sources=.
+            -Dsonar.host.url=https://sonarcloud.io
+    
         env:
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
