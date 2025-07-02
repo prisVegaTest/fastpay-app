@@ -7,7 +7,7 @@ describe('Home page FastPay API', () => {
   it('debería responder 200 en /', async () => {
     const res = await request(API_URL).get('/');
     assert.strictEqual(res.status, 200);
-    // Ajusta el texto esperado según lo que muestra tu página
+    // resultado esperado 
     assert.ok(res.text.includes('FastPay') || res.text.length > 0);
   });
 });
