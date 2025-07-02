@@ -132,26 +132,26 @@ jobs:
   health-check:
     needs: deploy
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Esperar a que la app esté disponible
         run: sleep 30
-        
+
       - name: Prueba de salud - Código de respuesta
         run: |
-                  STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://fastpay-app-ezckema9bmgqagcf.canadacentral-01.azurewebsites.net/)
-                  if [ "$STATUS" -ne 200 ]; then
-                    echo "❌ Health check failed! Status: $STATUS"
-                    exit 1
-                  fi
-                  echo "✅ Health check passed! Status: $STATUS"
-        
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://fastpay-app-ezckema9bmgqagcf.canadacentral-01.azurewebsites.net/)
+          if [ "$STATUS" -ne 200 ]; then
+            echo "❌ Health check failed! Status: $STATUS"
+            exit 1
+          fi
+          echo "✅ Health check passed! Status: $STATUS"
+
       - name: Prueba de carga útil (payload)
         run: |
-                  RESPONSE=$(curl -s https://fastpay-app-ezckema9bmgqagcf.canadacentral-01.azurewebsites.net/)
-                  echo "Respuesta: $RESPONSE"
-                  if [[ "$RESPONSE" != *"FastPay"* && "$RESPONSE" == "" ]]; then
-                    echo "❌ Payload check failed!"
-                    exit 1
-                  fi
-                  echo "✅ Payload check passed!"
+          RESPONSE=$(curl -s https://fastpay-app-ezckema9bmgqagcf.canadacentral-01.azurewebsites.net/)
+          echo "Respuesta: $RESPONSE"
+          if [[ "$RESPONSE" != *"FastPay"* && "$RESPONSE" == "" ]]; then
+            echo "❌ Payload check failed!"
+            exit 1
+          fi
+          echo "✅ Payload check passed!"
