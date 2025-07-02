@@ -1,0 +1,6 @@
+{
+    "sonarlint.connectedMode.project": {
+        "connectionId": "prisvegatest",
+        "projectKey": "prisVegaTest_fastpay-app"
+    }
+}
