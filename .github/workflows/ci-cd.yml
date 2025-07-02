@@ -28,6 +28,7 @@ jobs:
           chmod +x ./node_modules/.bin/nyc
           chmod +x ./node_modules/.bin/mocha
           chmod +x ./node_modules/.bin/eslint
+          chmod +x ./node_modules/.bin/prettier
 
       - name: Ejecutar pruebas y cobertura de código
         run: |
