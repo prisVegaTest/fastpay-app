@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Clonar repositorio
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Para asegurar que se obtenga todo el historial de commits
 
       - name: Configurar Node.js
         uses: actions/setup-node@v3
@@ -34,13 +36,13 @@ jobs:
     
       - name: Analizar código con ESLint
         run: npx eslint .
-
+      
       - name: Analizar código con SonarCloud
         uses: SonarSource/sonarcloud-github-action@v2
         with:
           projectBaseDir: .
           args: >
-            -Dsonar.projectKey=prisvegatest_fastpay-app
+            -Dsonar.projectKey=prisVegatest_fastpay-app
             -Dsonar.organization=prisvegatest
             -Dsonar.sources=.
             -Dsonar.host.url=https://sonarcloud.io
