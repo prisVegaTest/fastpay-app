@@ -42,7 +42,7 @@ jobs:
         with:
           projectBaseDir: .
           args: >
-            -Dsonar.projectKey=prisVegatest_fastpay-app
+            -Dsonar.projectKey=prisVegaTest_fastpay-app
             -Dsonar.organization=prisvegatest
             -Dsonar.sources=.
             -Dsonar.host.url=https://sonarcloud.io
