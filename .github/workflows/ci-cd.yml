@@ -73,9 +73,7 @@ jobs:
         run: npx prettier --check .
 
       - name: Escaneo de secretos con GitLeaks
-        uses: gitleaks/gitleaks-action@v2
-        with:
-          scan-args: --no-git --exclude-paths="node_modules,coverage,dist"
+        run: npx gitleaks detect --no-git --exclude-paths="node_modules,coverage,dist"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
