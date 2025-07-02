@@ -13,7 +13,7 @@ jobs:
       - name: Clonar repositorio
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Para asegurar que se obtenga todo el historial de commits
+          fetch-depth: 0 # Para asegurar que se obtenga todo el historial de commits
 
       - name: Configurar Node.js
         uses: actions/setup-node@v3
@@ -28,15 +28,15 @@ jobs:
           chmod +x ./node_modules/.bin/nyc
           chmod +x ./node_modules/.bin/mocha
           chmod +x ./node_modules/.bin/eslint
-      
+
       - name: Ejecutar pruebas y cobertura de código
         run: |
           npm run coverage > test-output.log
           echo "Pruebas y coberturas finalizadas."
-    
+
       - name: Analizar código con ESLint
         run: npx eslint .
-      
+
       - name: Analizar código con SonarCloud
         uses: SonarSource/sonarcloud-github-action@v2
         with:
@@ -46,27 +46,43 @@ jobs:
             -Dsonar.organization=prisvegatest
             -Dsonar.sources=.
             -Dsonar.host.url=https://sonarcloud.io
-    
+
         env:
-            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Auditoría de seguridad (npm audit)
         run: npm audit --audit-level=moderate || true
-      
+
       - name: Escanear imagen con Trivy
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/fastpay-app
-      
+
       - name: Instalar Trivy (alternativa si falla el action oficial)
         run: |
           sudo apt-get update && sudo apt-get install wget -y
           wget -q https://github.com/aquasecurity/trivy/releases/download/v0.49.1/trivy_0.49.1_Linux-64bit.tar.gz
           tar -xzf trivy_0.49.1_Linux-64bit.tar.gz
           sudo mv trivy /usr/local/bin/
-  
+
       - name: Escanear proyecto con Trivy
         run: trivy fs --exit-code 1 --severity HIGH,CRITICAL .
+
+      - name: Verificar formato de código con Prettier
+        run: npx prettier --check .
+
+      - name: Escaneo de secretos con GitLeaks
+        uses: zricethezav/gitleaks-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Dockerfile Linter
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
+
+      - name: Verificar dependencias desactualizadas
+        run: npm outdated || true
 
       - name: Subir logs y cobertura
         uses: actions/upload-artifact@v4
